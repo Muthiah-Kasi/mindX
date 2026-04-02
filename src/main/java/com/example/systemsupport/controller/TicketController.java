@@ -1,11 +1,13 @@
 package com.example.systemsupport.controller;
 
+import com.example.systemsupport.entity.Message;
 import com.example.systemsupport.entity.Ticket;
 import com.example.systemsupport.service.TicketService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,15 +24,23 @@ public class TicketController {
     /**
      * POST /tickets
      * Request body: { "query": "..." }
+     * Response: { "ticketId": ..., "aiResponse": "..." }
      */
     @PostMapping
-    public ResponseEntity<Ticket> createTicket(@RequestBody Map<String, String> request) {
+    public ResponseEntity<Map<String, Object>> createTicket(@RequestBody Map<String, String> request) {
         String query = request.get("query");
         if (query == null || query.isBlank()) {
             return ResponseEntity.badRequest().build();
         }
-        Ticket ticket = ticketService.createTicket(query);
-        return ResponseEntity.status(HttpStatus.CREATED).body(ticket);
+
+        Ticket ticket = new Ticket();
+        String aiResponse = ticketService.createTicket(query, ticket);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("ticketId", ticket.getId());
+        response.put("aiResponse", aiResponse);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     /**
@@ -43,13 +53,21 @@ public class TicketController {
 
     /**
      * GET /tickets/{id}
+     * Returns ticket details along with all linked messages.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Ticket> getTicketById(@PathVariable Long id) {
+    public ResponseEntity<Map<String, Object>> getTicketById(@PathVariable Long id) {
         Ticket ticket = ticketService.getTicketById(id);
         if (ticket == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(ticket);
+
+        List<Message> messages = ticketService.getMessagesByTicketId(id);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("ticket", ticket);
+        response.put("messages", messages);
+
+        return ResponseEntity.ok(response);
     }
 }
