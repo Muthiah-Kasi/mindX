@@ -77,4 +77,17 @@ public class TicketService {
     public List<Message> getMessagesByTicketId(Long ticketId) {
         return messageRepository.findByTicketId(ticketId);
     }
+
+    /**
+     * Updates the status of a ticket.
+     */
+    @Transactional
+    public Ticket updateTicketStatus(Long id, String status) {
+        Ticket ticket = ticketRepository.findById(id).orElse(null);
+        if (ticket == null) {
+            return null;
+        }
+        ticket.setStatus(status);
+        return ticketRepository.save(ticket);
+    }
 }

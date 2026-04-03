@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin(origins = "http://localhost:5174")
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/tickets")
 public class TicketController {
@@ -70,5 +70,27 @@ public class TicketController {
         response.put("messages", messages);
 
         return ResponseEntity.ok(response);
+    }
+
+    /**
+     * PUT /tickets/{id}/status
+     * Request body: { "status": "OPEN" | "RESOLVED" | "NEEDS_HUMAN" }
+     * Response: Updated ticket object
+     */
+    @PutMapping("/{id}/status")
+    public ResponseEntity<Ticket> updateTicketStatus(@PathVariable Long id,
+            @RequestBody Map<String, String> request) {
+        String status = request.get("status");
+        if (status == null || status.isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Ticket ticket = ticketService.getTicketById(id);
+        if (ticket == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Ticket updated = ticketService.updateTicketStatus(id, status);
+        return ResponseEntity.ok(updated);
     }
 }
