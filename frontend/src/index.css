@@ -1,0 +1,108 @@
+/* ===== CSS RESET & DESIGN TOKENS ===== */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  /* Colors */
+  --bg-primary: #0d0d14;
+  --bg-secondary: #13131f;
+  --bg-surface: #1a1a2e;
+  --bg-surface-hover: #22223a;
+  --bg-input: #16162a;
+
+  --text-primary: #e8e8f0;
+  --text-secondary: #9d9db8;
+  --text-muted: #6b6b8d;
+
+  --accent: #7c5bf5;
+  --accent-hover: #6a48e0;
+  --accent-glow: rgba(124, 91, 245, 0.35);
+  --accent-subtle: rgba(124, 91, 245, 0.12);
+
+  --user-bubble: #7c5bf5;
+  --user-bubble-text: #ffffff;
+  --ai-bubble: #1e1e36;
+  --ai-bubble-text: #d4d4ec;
+  --ai-bubble-border: rgba(124, 91, 245, 0.15);
+
+  --border: rgba(255, 255, 255, 0.06);
+  --border-focus: rgba(124, 91, 245, 0.5);
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 20px var(--accent-glow);
+
+  /* Typography */
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.8125rem;
+  --font-size-base: 0.9375rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.5rem;
+  --font-size-2xl: 2rem;
+
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  height: 100%;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(124, 91, 245, 0.25);
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(124, 91, 245, 0.4);
+}
+
+/* Selection */
+::selection {
+  background: var(--accent-subtle);
+  color: var(--text-primary);
+}
