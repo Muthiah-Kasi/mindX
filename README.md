@@ -1,5 +1,5 @@
 MindX Service AI
-A full-stack customer support system built as part of the MindX Digital Softwares internship assignment. It simulates a real SaaS support workflow:
+A full-stack customer support system built as part of the MindX Digital Software. It simulates a real SaaS support workflow:
 Customer Query → AI Response → Ticket Creation → Admin Management
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
