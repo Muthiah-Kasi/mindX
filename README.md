@@ -97,6 +97,29 @@ Status update via PUT /tickets/{id}/status
 UI updates instantly on change
 ```
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Day 5 – Smart Logic & Improvements
+
+Enhanced backend intelligence and reliability without changing UI.
+
+Features:
+```
+Automatic escalation:
+Queries containing "refund", "complaint", "angry"
+→ status automatically set to NEEDS_HUMAN
+```
+Priority tagging:
+```
+"refund", "angry" → HIGH
+"complaint" → MEDIUM
+Default → LOW
+```
+Input validation and Error handling:
+```
+Prevents empty or whitespace queries (HTTP 400)
+Basic backend exception handling (HTTP 500)
+Frontend safely handles API errors
+```
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # API Endpoints
 ```
 Method         Endpoint                Description
@@ -171,19 +194,13 @@ Full message persistence (user + AI)
 Customer chat UI
 Admin dashboard with ticket filtering
 Ticket status management
-```
--------------------------------------------------------------------------------------------------------------------------------------------------------------------
-# Future Enhancements
-```
-Authentication (Login / Signup)
-Real AI integration (OpenAI API)
-User-specific ticket views
-Real-time chat (WebSockets)
-Analytics dashboard
+Smart escalation logic
+Ticket priority classification
+Input validation and error handling
 ```
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Status
 
-Days 1–4 complete  |   Day 5 in progress
+Days 1–5 completed
 
 # Author: Muthiah Kasi
