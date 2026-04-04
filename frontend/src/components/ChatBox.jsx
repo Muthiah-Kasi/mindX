@@ -31,7 +31,17 @@ export default function ChatBox() {
     setIsLoading(true);
 
     try {
-      const res = await sendMessage(trimmed);
+      // Get userId from localStorage if logged in
+      let userId = null;
+      try {
+        const stored = localStorage.getItem('mindx_user');
+        if (stored) {
+          const user = JSON.parse(stored);
+          userId = user.userId;
+        }
+      } catch (e) { /* ignore */ }
+
+      const res = await sendMessage(trimmed, userId);
       const aiMessage = { sender: 'AI', text: res.aiResponse };
       setMessages((prev) => [...prev, aiMessage]);
     } catch (error) {

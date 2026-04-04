@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/tickets")
 public class TicketController {
@@ -38,6 +37,17 @@ public class TicketController {
 
         try {
             Ticket ticket = new Ticket();
+
+            // Link ticket to user if userId is provided
+            String userIdStr = request.get("userId");
+            if (userIdStr != null && !userIdStr.isBlank()) {
+                try {
+                    ticket.setUserId(Long.parseLong(userIdStr));
+                } catch (NumberFormatException ignored) {
+                    // Ignore invalid userId, keep it null
+                }
+            }
+
             String aiResponse = ticketService.createTicket(query, ticket);
 
             Map<String, Object> response = new HashMap<>();

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getTickets } from '../services/api';
+import { getAdminUsers } from '../services/api';
 import './AdminDashboard.css';
 
 const FILTER_TABS = [
@@ -34,28 +34,46 @@ function formatTime(dateStr) {
 }
 
 export default function AdminDashboard() {
-  const [tickets, setTickets] = useState([]);
+  const [users, setUsers] = useState([]);
   const [activeFilter, setActiveFilter] = useState('ALL');
+  const [searchMobile, setSearchMobile] = useState('');
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    async function fetchTickets() {
-      try {
-        const data = await getTickets();
-        setTickets(data);
-      } catch (error) {
-        console.error('Failed to fetch tickets:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchTickets();
+    fetchUsers();
   }, []);
 
-  const filteredTickets = activeFilter === 'ALL'
-    ? tickets
-    : tickets.filter((t) => t.status === activeFilter);
+  async function fetchUsers(mobile) {
+    setLoading(true);
+    try {
+      const data = await getAdminUsers(mobile || undefined);
+      setUsers(data);
+    } catch (error) {
+      console.error('Failed to fetch users:', error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const handleSearch = (e) => {
+    const value = e.target.value.replace(/\D/g, ''); // digits only
+    setSearchMobile(value);
+    if (value.length === 10) {
+      fetchUsers(value);
+    } else if (value.length === 0) {
+      fetchUsers();
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('mindx_user');
+    navigate('/auth');
+  };
+
+  const filteredUsers = activeFilter === 'ALL'
+    ? users
+    : users.filter((u) => u.currentStatus === activeFilter);
 
   return (
     <div className="admin-page">
@@ -69,7 +87,17 @@ export default function AdminDashboard() {
           </div>
           <span className="admin-header__title">MindX Support AI</span>
         </div>
-        <span className="admin-header__badge">Admin v2.6.0</span>
+        <div className="admin-header__right">
+          <span className="admin-header__badge">Admin v2.6.0</span>
+          <button className="admin-logout-btn" onClick={handleLogout}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+            Logout
+          </button>
+        </div>
       </header>
 
       {/* Main content */}
@@ -78,7 +106,30 @@ export default function AdminDashboard() {
           {/* Title section */}
           <div className="admin-title-section">
             <h1 className="admin-title">Admin Dashboard</h1>
-            <p className="admin-subtitle">Central queue for active support inquiries and AI escalations.</p>
+            <p className="admin-subtitle">User-based support queue with conversation history.</p>
+          </div>
+
+          {/* Search bar */}
+          <div className="admin-search">
+            <div className="admin-search__wrapper">
+              <svg className="admin-search__icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+              <input
+                type="text"
+                className="admin-search__input"
+                placeholder="Search by mobile number..."
+                value={searchMobile}
+                onChange={handleSearch}
+                maxLength={10}
+              />
+              {searchMobile && (
+                <button className="admin-search__clear" onClick={() => { setSearchMobile(''); fetchUsers(); }}>
+                  ×
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Filter tabs */}
@@ -94,53 +145,66 @@ export default function AdminDashboard() {
             ))}
           </div>
 
-          {/* Ticket cards */}
+          {/* User cards */}
           <div className="admin-tickets">
             {loading && (
               <div className="admin-empty">
                 <div className="admin-loading-dots">
                   <span></span><span></span><span></span>
                 </div>
-                <p>Loading tickets...</p>
+                <p>Loading users...</p>
               </div>
             )}
 
-            {!loading && filteredTickets.length === 0 && (
+            {!loading && filteredUsers.length === 0 && (
               <div className="admin-empty">
                 <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.4 }}>
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                  <polyline points="14 2 14 8 20 8" />
-                  <line x1="16" y1="13" x2="8" y2="13" />
-                  <line x1="16" y1="17" x2="8" y2="17" />
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
                 </svg>
-                <p>No tickets found</p>
+                <p>No users found</p>
               </div>
             )}
 
-            {!loading && filteredTickets.map((ticket) => (
+            {!loading && filteredUsers.map((user) => (
               <div
-                key={ticket.id}
+                key={user.userId}
                 className="ticket-card"
-                onClick={() => navigate(`/tickets/${ticket.id}`)}
+                onClick={() => navigate(`/admin/users/${user.userId}`)}
                 role="button"
                 tabIndex={0}
-                onKeyDown={(e) => e.key === 'Enter' && navigate(`/tickets/${ticket.id}`)}
+                onKeyDown={(e) => e.key === 'Enter' && navigate(`/admin/users/${user.userId}`)}
               >
                 <div className="ticket-card__header">
-                  <span className={`ticket-card__status ${getStatusClass(ticket.status)}`}>
-                    {ticket.status}
+                  <span className={`ticket-card__status ${getStatusClass(user.currentStatus)}`}>
+                    {user.currentStatus}
                   </span>
-                  <span className="ticket-card__id">ID: #{ticket.id}</span>
-                  <span className="ticket-card__time">{formatTime(ticket.createdAt)}</span>
+                  <span className="ticket-card__id">ID: #{user.userId}</span>
+                  <span className="ticket-card__time">
+                    {user.latestMessageTimestamp ? formatTime(user.latestMessageTimestamp) : 'No messages'}
+                  </span>
                 </div>
-                <p className="ticket-card__query">"{ticket.query}"</p>
-                <div className="ticket-card__footer">
-                  <div className="ticket-card__avatar">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                <div className="ticket-card__user-info">
+                  <div className="ticket-card__user-avatar">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v2h20v-2c0-3.3-6.7-5-10-5z" />
                     </svg>
                   </div>
+                  <div className="ticket-card__user-details">
+                    <span className="ticket-card__user-name">{user.name}</span>
+                    <span className="ticket-card__user-email">{user.email}</span>
+                  </div>
+                  <span className="ticket-card__user-mobile">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
+                      <line x1="12" y1="18" x2="12.01" y2="18" />
+                    </svg>
+                    {user.mobileNumber}
+                  </span>
                 </div>
+                {user.latestMessage && (
+                  <p className="ticket-card__query">"{user.latestMessage}"</p>
+                )}
               </div>
             ))}
           </div>
