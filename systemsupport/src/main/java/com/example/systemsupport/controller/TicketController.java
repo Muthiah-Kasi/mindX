@@ -31,25 +31,39 @@ public class TicketController {
     public ResponseEntity<Map<String, Object>> createTicket(@RequestBody Map<String, String> request) {
         String query = request.get("query");
         if (query == null || query.isBlank()) {
-            return ResponseEntity.badRequest().build();
+            Map<String, Object> error = new HashMap<>();
+            error.put("error", "Query cannot be empty");
+            return ResponseEntity.badRequest().body(error);
         }
 
-        Ticket ticket = new Ticket();
-        String aiResponse = ticketService.createTicket(query, ticket);
+        try {
+            Ticket ticket = new Ticket();
+            String aiResponse = ticketService.createTicket(query, ticket);
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("ticketId", ticket.getId());
-        response.put("aiResponse", aiResponse);
+            Map<String, Object> response = new HashMap<>();
+            response.put("ticketId", ticket.getId());
+            response.put("aiResponse", aiResponse);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (Exception e) {
+            Map<String, Object> error = new HashMap<>();
+            error.put("error", "Something went wrong. Please try again.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
     }
 
     /**
      * GET /tickets
      */
     @GetMapping
-    public ResponseEntity<List<Ticket>> getAllTickets() {
-        return ResponseEntity.ok(ticketService.getAllTickets());
+    public ResponseEntity<?> getAllTickets() {
+        try {
+            return ResponseEntity.ok(ticketService.getAllTickets());
+        } catch (Exception e) {
+            Map<String, Object> error = new HashMap<>();
+            error.put("error", "Something went wrong. Please try again.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
     }
 
     /**
@@ -57,19 +71,25 @@ public class TicketController {
      * Returns ticket details along with all linked messages.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> getTicketById(@PathVariable Long id) {
-        Ticket ticket = ticketService.getTicketById(id);
-        if (ticket == null) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<?> getTicketById(@PathVariable Long id) {
+        try {
+            Ticket ticket = ticketService.getTicketById(id);
+            if (ticket == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            List<Message> messages = ticketService.getMessagesByTicketId(id);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("ticket", ticket);
+            response.put("messages", messages);
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> error = new HashMap<>();
+            error.put("error", "Something went wrong. Please try again.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
         }
-
-        List<Message> messages = ticketService.getMessagesByTicketId(id);
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("ticket", ticket);
-        response.put("messages", messages);
-
-        return ResponseEntity.ok(response);
     }
 
     /**
@@ -78,19 +98,27 @@ public class TicketController {
      * Response: Updated ticket object
      */
     @PutMapping("/{id}/status")
-    public ResponseEntity<Ticket> updateTicketStatus(@PathVariable Long id,
+    public ResponseEntity<?> updateTicketStatus(@PathVariable Long id,
             @RequestBody Map<String, String> request) {
         String status = request.get("status");
         if (status == null || status.isBlank()) {
-            return ResponseEntity.badRequest().build();
+            Map<String, Object> error = new HashMap<>();
+            error.put("error", "Status cannot be empty");
+            return ResponseEntity.badRequest().body(error);
         }
 
-        Ticket ticket = ticketService.getTicketById(id);
-        if (ticket == null) {
-            return ResponseEntity.notFound().build();
-        }
+        try {
+            Ticket ticket = ticketService.getTicketById(id);
+            if (ticket == null) {
+                return ResponseEntity.notFound().build();
+            }
 
-        Ticket updated = ticketService.updateTicketStatus(id, status);
-        return ResponseEntity.ok(updated);
+            Ticket updated = ticketService.updateTicketStatus(id, status);
+            return ResponseEntity.ok(updated);
+        } catch (Exception e) {
+            Map<String, Object> error = new HashMap<>();
+            error.put("error", "Something went wrong. Please try again.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
     }
 }

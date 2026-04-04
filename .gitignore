@@ -34,3 +34,7 @@ build/
 
 ### Enviroinment Variables ###
 .env 
+
+### Logs ###
+boot_log.txt
+*.log

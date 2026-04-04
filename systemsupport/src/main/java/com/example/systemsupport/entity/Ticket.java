@@ -27,6 +27,9 @@ public class Ticket {
     @Column(nullable = false)
     private String status;
 
+    @Column(columnDefinition = "VARCHAR(10) DEFAULT 'LOW'")
+    private String priority = "LOW";
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

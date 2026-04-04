@@ -32,9 +32,23 @@ public class TicketService {
      */
     @Transactional
     public String createTicket(String query, Ticket ticket) {
-        // 1. Create and save ticket
+        // 1. Create ticket with smart escalation logic
         ticket.setQuery(query);
-        ticket.setStatus("OPEN");
+
+        String lowerQuery = query.toLowerCase();
+
+        // Escalation: check for keywords that need human attention
+        if (lowerQuery.contains("refund") || lowerQuery.contains("angry")) {
+            ticket.setStatus("NEEDS_HUMAN");
+            ticket.setPriority("HIGH");
+        } else if (lowerQuery.contains("complaint")) {
+            ticket.setStatus("NEEDS_HUMAN");
+            ticket.setPriority("MEDIUM");
+        } else {
+            ticket.setStatus("OPEN");
+            ticket.setPriority("LOW");
+        }
+
         Ticket savedTicket = ticketRepository.save(ticket);
 
         // 2. Save USER message
