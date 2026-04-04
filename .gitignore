@@ -38,3 +38,7 @@ build/
 ### Logs ###
 boot_log.txt
 *.log
+
+build_output.txt
+frontend/build_output.txt
+systemsupport/build_output.txt
