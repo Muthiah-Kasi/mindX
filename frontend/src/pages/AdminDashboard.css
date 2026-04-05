@@ -90,6 +90,135 @@
   line-height: 1.5;
 }
 
+/* ---- Analytics Section ---- */
+.admin-analytics {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+  flex-wrap: wrap;
+}
+
+.admin-analytics__card {
+  flex: 1;
+  min-width: 140px;
+  max-width: 180px;
+  background: rgba(18, 18, 32, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(124, 91, 245, 0.12);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg) var(--space-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  position: relative;
+  overflow: hidden;
+  transition: all var(--transition-base);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Animated subtle glow effect */
+.admin-analytics__card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    transparent 30%,
+    rgba(124, 91, 245, 0.15) 50%,
+    transparent 70%
+  );
+  background-size: 300% 300%;
+  animation: analyticsGlow 4s ease-in-out infinite;
+  z-index: -1;
+}
+
+@keyframes analyticsGlow {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.admin-analytics__card:hover {
+  border-color: rgba(124, 91, 245, 0.25);
+  box-shadow: 0 4px 24px rgba(124, 91, 245, 0.08);
+  transform: translateY(-2px);
+}
+
+/* Status-specific subtle glows */
+.admin-analytics__card--open::before {
+  background: linear-gradient(135deg, transparent 30%, rgba(52, 211, 153, 0.12) 50%, transparent 70%);
+  background-size: 300% 300%;
+  animation: analyticsGlow 4s ease-in-out infinite;
+}
+
+.admin-analytics__card--open:hover {
+  border-color: rgba(52, 211, 153, 0.2);
+}
+
+.admin-analytics__card--resolved::before {
+  background: linear-gradient(135deg, transparent 30%, rgba(156, 163, 175, 0.12) 50%, transparent 70%);
+  background-size: 300% 300%;
+  animation: analyticsGlow 4s ease-in-out infinite;
+}
+
+.admin-analytics__card--resolved:hover {
+  border-color: rgba(156, 163, 175, 0.2);
+}
+
+.admin-analytics__card--needs-human::before {
+  background: linear-gradient(135deg, transparent 30%, rgba(239, 68, 68, 0.12) 50%, transparent 70%);
+  background-size: 300% 300%;
+  animation: analyticsGlow 4s ease-in-out infinite;
+}
+
+.admin-analytics__card--needs-human:hover {
+  border-color: rgba(239, 68, 68, 0.2);
+}
+
+.admin-analytics__label {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.admin-analytics__count {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--accent);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.admin-analytics__count--open {
+  color: #34d399;
+}
+
+.admin-analytics__count--resolved {
+  color: #9ca3af;
+}
+
+.admin-analytics__count--needs-human {
+  color: #ef4444;
+}
+
+/* Responsive analytics */
+@media (max-width: 600px) {
+  .admin-analytics {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .admin-analytics__card {
+    max-width: 100%;
+    width: 100%;
+  }
+}
+
 /* ---- Filters ---- */
 .admin-filters {
   display: flex;

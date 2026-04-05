@@ -109,6 +109,34 @@ export default function AdminDashboard() {
             <p className="admin-subtitle">User-based support queue with conversation history.</p>
           </div>
 
+          {/* Analytics section */}
+          {!loading && (
+            <div className="admin-analytics">
+              <div className="admin-analytics__card">
+                <span className="admin-analytics__label">Total Users</span>
+                <span className="admin-analytics__count">{users.length}</span>
+              </div>
+              <div className="admin-analytics__card admin-analytics__card--open">
+                <span className="admin-analytics__label">Open</span>
+                <span className="admin-analytics__count admin-analytics__count--open">
+                  {users.filter(u => u.currentStatus === 'OPEN').length}
+                </span>
+              </div>
+              <div className="admin-analytics__card admin-analytics__card--resolved">
+                <span className="admin-analytics__label">Resolved</span>
+                <span className="admin-analytics__count admin-analytics__count--resolved">
+                  {users.filter(u => u.currentStatus === 'RESOLVED').length}
+                </span>
+              </div>
+              <div className="admin-analytics__card admin-analytics__card--needs-human">
+                <span className="admin-analytics__label">Needs Human</span>
+                <span className="admin-analytics__count admin-analytics__count--needs-human">
+                  {users.filter(u => u.currentStatus === 'NEEDS_HUMAN').length}
+                </span>
+              </div>
+            </div>
+          )}
+
           {/* Search bar */}
           <div className="admin-search">
             <div className="admin-search__wrapper">
