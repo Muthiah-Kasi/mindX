@@ -199,8 +199,53 @@ Ticket priority classification
 Input validation and error handling
 ```
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Status
 
-Days 1–5 completed
+# Additional Features (Beyond Assignment)
+
+Role-Based Authentication (Login & Signup)
+
+Implemented a complete authentication system:
+```
+User registration (Signup)
+Secure login with validation
+Added role-based access control:
+Admin → Redirected to Admin Dashboard
+User → Redirected to Chat Interface
+Ensures:
+Controlled access to features
+Separation between admin and user functionalities
+```
+
+Analytics Dashboard
+
+Added analytics section in the admin dashboard to provide system insights
+
+Features:
+```
+Total number of users
+Ticket statistics:
+Open tickets count
+Resolved tickets count
+Needs Human tickets count
+Visualization:
+Displayed using summary cards / bar charts
+Helps admin quickly monitor system performance
+```
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Impact of Additional Features
+```
+Makes the application closer to a real-world SaaS product
+Improves usability, security, and system monitoring
+Enables future scalability for:
+Advanced role management
+Detailed analytics & reporting
+User activity tracking
+```
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Status : Project Completed
+
+Days 1–5 tasks completed along with Additonal Enhancements.
 
 # Author: Muthiah Kasi
